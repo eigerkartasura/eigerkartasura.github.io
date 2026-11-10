@@ -1,0 +1,42 @@
+# Menyalin katalog pelanggan dari repo Basecamp (hub-toko-2299/katalog) ke situs ini.
+# Berjalan otomatis tiap jam; sumber kode tetap di repo Basecamp, jangan edit file situs di sini.
+name: Salin katalog
+
+on:
+  schedule:
+    - cron: '7 * * * *'
+  workflow_dispatch:
+  push:
+    paths: ['.github/workflows/salin-katalog.yml']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: salin-katalog
+  cancel-in-progress: true
+
+jobs:
+  salin:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ambil katalog terbaru
+        run: |
+          set -euo pipefail
+          SUMBER=https://raw.githubusercontent.com/alishobrun/hub-toko-2299/main
+          mkdir -p assets
+          for f in index.html katalog.css katalog.js; do curl -fsSL "$SUMBER/katalog/$f" -o "$f"; done
+          for f in config.js favicon-64.png icon-180.png icon-512.png; do curl -fsSL "$SUMBER/assets/$f" -o "assets/$f" || true; done
+          # jalur aset relatif: katalog ada di akar situs ini
+          sed -i 's#\.\./assets/#assets/#g' index.html
+          sed -i 's#content="assets/icon-512.png"#content="https://eigerkartasura.github.io/assets/icon-512.png"#' index.html
+          touch .nojekyll
+      - name: Simpan bila berubah
+        run: |
+          git config user.name "katalog-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet && { echo "Tidak ada perubahan"; exit 0; }
+          git commit -m "Perbarui katalog dari Basecamp"
+          git push
