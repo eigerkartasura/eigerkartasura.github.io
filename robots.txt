@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://eigerkartasura.github.io/sitemap.xml
