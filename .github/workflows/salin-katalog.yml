@@ -1,11 +1,13 @@
-# Menyalin katalog pelanggan dari repo Basecamp (hub-toko-2299) ke situs ini.
-# Berjalan otomatis tiap jam; sumber kode tetap di repo Basecamp, jangan edit file situs di sini.
+# Menyalin katalog pelanggan dari repo Basecamp (hub-toko-2299) ke situs ini, plus salinan data siap pakai.
+# Berjalan otomatis tiap 30 menit; sumber kode tetap di repo Basecamp, jangan edit file situs di sini.
 # Daftar berkas yang disalin ada di katalog/berkas.txt (repo Basecamp): baris "<sumber> <tujuan>".
+# data/katalog.json & data/info/<kode>.json = salinan data dari mesin Basecamp supaya katalog tampil instan;
+# halaman tetap mengecek data terbaru langsung ke mesin di belakang layar. Berkas data hanya diubah bila isinya berubah.
 name: Salin katalog
 
 on:
   schedule:
-    - cron: '7 * * * *'
+    - cron: '7,37 * * * *'
   workflow_dispatch:
   push:
     paths: ['.github/workflows/salin-katalog.yml']
@@ -36,8 +38,52 @@ jobs:
           # jalur aset relatif: katalog ada di akar situs ini
           sed -i 's#\.\./assets/#assets/#g' index.html
           touch .nojekyll
+      - name: Salinan data (katalog & info produk)
+        run: |
+          set -uo pipefail
+          API=$(grep -o "https://script.google.com/macros/s/[A-Za-z0-9_-]*/exec" assets/config.js | head -1)
+          ambil() { curl -fsSL --retry 3 --retry-delay 5 --max-time 120 -H 'Content-Type: text/plain' --data "{\"action\":\"$1\"}" "$API" -o "$2"; }
+          ambil katalog /tmp/katalog.json || echo "katalog gagal diambil, salinan lama dipakai"
+          ambil katalogInfoSemua /tmp/info.json || echo "info gagal diambil, salinan lama dipakai"
+          python3 - <<'PY'
+          import json, os, time, glob
+          os.makedirs('data/info', exist_ok=True)
+          def baca(p):
+              try:
+                  r = json.load(open(p))
+                  return r['data'] if r.get('ok') and r.get('data') is not None else None
+              except Exception as e:
+                  print('lewati', p, e); return None
+          k = baca('/tmp/katalog.json')
+          if k and k.get('items'):
+              # satu artikel per baris supaya perubahan di riwayat git kecil; berkas hanya ditulis ulang bila datanya berubah
+              j = lambda x: json.dumps(x, ensure_ascii=False, separators=(',', ':'))
+              items = k.pop('items')
+              isi = j(k)[:-1] + ',"items":[\n' + ',\n'.join(j(it) for it in items) + '\n]}'
+              lama = ''
+              try: lama = json.load(open('data/katalog.json')).get('d')
+              except Exception: lama = None
+              k['items'] = items
+              if lama != k:
+                  open('data/katalog.json', 'w').write('{"t":%d,"d":%s}\n' % (int(time.time()), isi))
+                  print('katalog diperbarui:', len(items), 'artikel')
+              else: print('katalog sama')
+          info = baca('/tmp/info.json')
+          if isinstance(info, dict) and info:
+              ada = set()
+              for g, x in info.items():
+                  if not (len(g) == 9 and g.isdigit()): continue
+                  ada.add(g)
+                  isi = json.dumps(x, ensure_ascii=False, separators=(',', ':'))
+                  p = f'data/info/{g}.json'
+                  if not os.path.exists(p) or open(p).read() != isi: open(p, 'w').write(isi)
+              for p in glob.glob('data/info/*.json'):
+                  if os.path.basename(p)[:-5] not in ada: os.remove(p)
+              print('info:', len(ada), 'artikel')
+          PY
       - name: Simpan bila berubah
         run: |
+          set -euo pipefail
           git config user.name "katalog-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
