@@ -27,8 +27,8 @@
   <meta name="apple-mobile-web-app-title" content="EIGER Kartasura">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="katalog.css?v=202611122200">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@1,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="katalog.css?v=202611122300">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Store","name":"EIGER Store A. Yani Kartasura","brand":{"@type":"Brand","name":"EIGER"},"url":"https://eigerkartasura.github.io/","image":"https://eigerkartasura.github.io/og-katalog.jpg","telephone":"+62-811-2002-2574","address":{"@type":"PostalAddress","streetAddress":"Jl. A. Yani Km 7, Banaran, Pabelan","addressLocality":"Kartasura","addressRegion":"Jawa Tengah","addressCountry":"ID"},"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],"opens":"08:30","closes":"21:45"}],"hasMap":"https://www.google.com/maps/search/?api=1&query=EIGER%20STORE%20A.YANI%20KARTASURA%20SUKOHARJO&query_place_id=ChIJ6bf1AHkVei4RSA6CwOUUCqA"}</script>
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Product", "name": "Road Journey T-Shirt", "sku": "910009984", "brand": {"@type": "Brand", "name": "EIGER"}, "url": "https://eigerkartasura.github.io/p/910009984/", "category": "TOP", "image": ["https://d1yutv2xslo29o.cloudfront.net/product/media/web/21422775-db91-4367-a8ba-951045f761d1.webp", "https://d1yutv2xslo29o.cloudfront.net/product/variant/photo/1ea855a0-b1b9-4d89-984e-13fd6713cae5.jpg", "https://d1yutv2xslo29o.cloudfront.net/product/variant/photo/63830e04-b92f-4c9d-acc2-09a3326b62ad.jpg"], "description": "Bertualang semakin menyenangkan dengan Road Journey. Kaus dari EIGER 1989 ini cocok dipakai untuk berjalan-jalan di sekitar kota maupun nongkrong bareng sahabat. Petualanganmu semakin sustain karena Road Journey terbuat dari bahan daur ulang yang nyaman.", "offers": {"@type": "Offer", "priceCurrency": "IDR", "price": 249000, "availability": "https://schema.org/InStoreOnly", "url": "https://eigerkartasura.github.io/p/910009984/", "seller": {"@type": "Store", "name": "EIGER Store A. Yani Kartasura"}}}</script>
 </head>
@@ -69,11 +69,25 @@
       </div>
       <section class="kotak panduan-awal" id="panduanAwal" hidden></section>
 
-      <section class="kotak">
+      <section class="kotak kategori-kotak">
         <div class="kotak-kepala"><h2>Kategori</h2></div>
         <div class="kategori" id="kategori"></div>
       </section>
-
+      <section class="kotak promo-strip" id="stripPromo" hidden>
+        <div class="kotak-kepala strip-kepala">
+          <h2 class="judul-promo"><span class="petir" aria-hidden="true">⚡</span>PROMO TOKO</h2>
+          <span class="hitung-mundur" id="hitungMundur" aria-label="Sisa waktu promo"></span>
+          <button class="lihat" type="button" id="stripSemua">Lihat semua ›</button>
+        </div>
+        <div class="strip-rel deret" id="stripRel"></div>
+      </section>
+      <section class="kotak gaya-kotak">
+        <div class="gaya-rel" id="gaya"></div>
+      </section>
+      <section class="kotak terlaris-kotak" id="terlarisKotak" hidden>
+        <div class="kotak-kepala"><h2 class="judul-tebal">PRODUK TERLARIS</h2><span class="kepala-ket">di toko, 30 hari terakhir</span></div>
+        <div class="strip-rel deret" id="terlarisRel"></div>
+      </section>
       <section class="kotak populer-kotak" id="populerKotak" hidden>
         <div class="kotak-kepala"><h2>Paling banyak dilihat minggu ini</h2></div>
         <div class="strip-rel" id="populerRel"></div>
@@ -86,20 +100,13 @@
         <div class="kotak-kepala"><h2>Pilihan toko</h2></div>
         <div class="koleksi-rel" id="koleksi"></div>
       </section>
-
       <section class="kotak">
         <div class="kotak-kepala"><h2>Untuk aktivitas</h2></div>
         <div class="aktivitas" id="aktivitas"></div>
       </section>
 
-      <section class="kotak promo-strip" id="stripPromo" hidden>
-        <div class="kotak-kepala strip-kepala">
-          <h2><span class="petir" aria-hidden="true">⚡</span>Promo toko</h2>
-          <span class="hitung-mundur" id="hitungMundur" aria-label="Sisa waktu promo"></span>
-          <button class="lihat" type="button" id="stripSemua">Lihat semua ›</button>
-        </div>
-        <div class="strip-rel" id="stripRel"></div>
-      </section>
+
+
     </section>
 
     <!-- daftar produk -->
@@ -120,7 +127,7 @@
       <b>EIGER Store A. Yani Kartasura</b>
       <p>Ketersediaan dan harga promo mengikuti data terakhir di toko dan bisa berubah. Pastikan lewat WhatsApp sebelum datang.</p>
       <p class="aman-kaki">Katalog resmi hanya di <b>eigerkartasura.github.io</b>. Pembayaran hanya di kasir toko; kami tidak pernah meminta transfer ke rekening pribadi.</p>
-      <p class="kredit">Foto alam Merbabu &amp; Merapi dari <a href="https://unsplash.com/?utm_source=katalog_eiger_kartasura&amp;utm_medium=referral" target="_blank" rel="noopener">Unsplash</a>: Dan Gilmour, Fajruddin Mudzakkir, Irfan Bayuaji, Bayu Syaits, Kukuh Himawan Samudro, Fahrul Razi.</p>
+      <p class="kredit">Foto alam Merbabu &amp; Merapi dari <a href="https://unsplash.com/?utm_source=katalog_eiger_kartasura&amp;utm_medium=referral" target="_blank" rel="noopener">Unsplash</a>: Dan Gilmour, Fajruddin Mudzakkir, Irfan Bayuaji, Bayu Syaits, Kukuh Himawan Samudro, Fahrul Razi, Reki Agung Rediana, yudhisthira lk, Yayan Mulyana.</p>
     </footer>
   </div>
 
@@ -148,7 +155,7 @@
     <div class="lembar-in" id="lembar2Isi"></div>
   </dialog>
 
-  <script src="assets/config.js?v=202611122200"></script>
-  <script src="katalog.js?v=202611122200"></script>
+  <script src="assets/config.js?v=202611122300"></script>
+  <script src="katalog.js?v=202611122300"></script>
 </body>
 </html>
